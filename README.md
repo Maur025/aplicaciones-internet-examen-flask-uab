@@ -38,3 +38,7 @@ user-friendly interface.
    ```bash
    python3 run.py
    ```
+
+## Prototype Model
+
+![Prototype Model](docs/prototype.svg)
