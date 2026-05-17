@@ -28,16 +28,34 @@ user-friendly interface.
    ```bash
    uv sync
    ```
-4. Run the application:
+4. Use to `.env` file in IDE or export the environment variables in `env.sh` with command:
+
+   ```bash
+   source env.sh
+   ```
+5. Run the application:
+   ```bash
+   flask run
+   ```
+
+   Or:
 
    ```bash
    uv run run.py
    ```
+
    Or:
 
    ```bash
    python3 run.py
    ```
+
+## APP CREDENTIALS
+
+Username and password to prototype the app in fab:
+
+- Username: admin
+- Password: Admin123.
 
 ## Prototype Model
 
