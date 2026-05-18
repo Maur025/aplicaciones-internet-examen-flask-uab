@@ -1,0 +1,106 @@
+<div class="container-fluid" style="margin-top: 20px;">
+    <div class="row" style="margin-bottom: 25px;">
+        <div class="col-md-12">
+            <h1 style="font-weight: 700; color: #2c3e50; font-size: 28px; letter-spacing: -0.5px;">
+                <i class="fa fa-tachometer" style="margin-right: 10px; color: #34495e;"></i>Resumen de Alertas
+            </h1>
+            <hr style="border-top: 2px solid #ecf0f1; margin-top: 10px;">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12" style="margin-bottom: 20px;">
+            <div class="panel panel-default"
+                 style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #e74c3c;">
+                <div class="panel-body" style="padding: 25px 30px;">
+                    <div class="row">
+                        <div class="col-xs-3" style="font-size: 45px; color: #e74c3c; padding-top: 5px;">
+                            <i class="fa fa-bell-o"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <span style="font-size: 14px; text-transform: uppercase; color: #7f8c8d; font-weight: 600;">Total Emitidas</span>
+                            <h2 style="margin: 5px 0 0 0; font-size: 38px; font-weight: 700; color: #2c3e50;">{{
+                                total_alerted_alerts }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12" style="margin-bottom: 20px;">
+            <div class="panel panel-default"
+                 style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #2ecc71;">
+                <div class="panel-body" style="padding: 25px 30px;">
+                    <div class="row">
+                        <div class="col-xs-3" style="font-size: 45px; color: #2ecc71; padding-top: 5px;">
+                            <i class="fa fa-eye"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <span style="font-size: 14px; text-transform: uppercase; color: #7f8c8d; font-weight: 600;">Total Vistas</span>
+                            <h2 style="margin: 5px 0 0 0; font-size: 38px; font-weight: 700; color: #2c3e50;">{{
+                                total_viewed_alerts }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-md-6 col-md-offset-3 col-sm-12">
+            <div class="panel panel-default" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <div class="panel-heading"
+                     style="background-color: #fff; font-weight: 600; color: #34495e; border-bottom: 1px solid #f2f4f4;">
+                    <i class="fa fa-pie-chart" style="margin-right: 8px;"></i> Proporción de Alertas
+                </div>
+                <div class="panel-body" style="padding: 30px; min-height: 320px;">
+                    <canvas id="alertsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const totalEmitidas = parseInt("{{ total_alerted_alerts }}") || 0;
+        const totalVistas = parseInt("{{ total_viewed_alerts }}") || 0;
+
+        const ctx = document.getElementById('alertsChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Alertas Emitidas', 'Alertas Vistas'],
+                datasets: [{
+                    data: [totalEmitidas, totalVistas],
+                    backgroundColor: [
+                        '#e74c3c',
+                        '#2ecc71'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 13,
+                                family: 'sans-serif'
+                            },
+                            color: '#34495e',
+                            padding: 20
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

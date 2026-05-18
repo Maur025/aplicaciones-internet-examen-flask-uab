@@ -1,7 +1,7 @@
-from flask_appbuilder import ModelView
+from flask_appbuilder import ModelView, BaseView, expose
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 
-from .extensions import appbuilder
+from .extensions import appbuilder, db
 from .models import Server, Metric, AlertConfiguration, AlertHistory, MetricHistory
 
 
@@ -107,6 +107,21 @@ class AlertHistoryModelView(ModelView):
     search_exclude_columns = ['id', 'server_id']
 
 
+class ReportView(BaseView):
+    route_base = '/reports'
+
+    @expose('/total-alerts')
+    def index(self):
+        total_alerted_alerts = db.session.query(db.func.count(AlertHistory.id)).where(
+            AlertHistory.state == 'ALERTED').scalar() or 0
+
+        total_viewed_alerts = db.session.query(db.func.count(AlertHistory.id)).where(
+            AlertHistory.state == 'VIEWED').scalar() or 0
+
+        return self.render_template("reports.html", total_alerted_alerts=total_alerted_alerts,
+                                    total_viewed_alerts=total_viewed_alerts)
+
+
 appbuilder.add_view(ServerModelView, 'Servidores', icon='fa-server', category='Inicio',
                     category_icon='fa-home')
 
@@ -121,3 +136,9 @@ appbuilder.add_view(AlertHistoryModelView, 'Historial de Alertas', icon='fa-box 
 
 appbuilder.add_view(MetricHistoryModelView, 'Historial de Metricas', icon='fa-box ', category='Inicio',
                     category_icon='fa-home')
+
+appbuilder.add_view_no_menu(ReportView())
+
+appbuilder.add_link('Total de alertas', href='/reports/total-alerts', icon='fa-chart-bar',
+                    category='Reportes',
+                    category_icon='fa-chart-bar')
