@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Double, UUID, ForeignKey, Integer
+from sqlalchemy import Column, String, Double, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 from .base_model import BaseModel
@@ -15,7 +15,7 @@ class AlertHistory(BaseModel):
     min_value = Column(Double, nullable=False)
     remain_value_min = Column(Integer, nullable=False, default=0)
 
-    server_id = Column(UUID(as_uuid=True), ForeignKey('servers.id'), nullable=False)
+    server_id = Column(String(36), ForeignKey('servers.id'), nullable=False)
     server = relationship('Server', lazy="joined")
 
     def __repr__(self):
