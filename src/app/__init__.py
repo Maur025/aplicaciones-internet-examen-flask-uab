@@ -11,8 +11,11 @@ def create_app() -> Flask:
     db.init_app(app)
 
     with app.app_context():
+        from . import models
+
         appbuilder.init_app(app, db.session)
         db.create_all()
-        # Registering the views and APIs
-        ...
+
+        from . import views
+
     return app
