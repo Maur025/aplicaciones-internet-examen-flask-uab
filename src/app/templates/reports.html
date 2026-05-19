@@ -1,44 +1,49 @@
-<div class="container-fluid" style="margin-top: 20px;">
-    <div class="row" style="margin-bottom: 25px;">
+<!-- Contenedor Envolvente para Centrar y limitar la expansión en pantallas anchas -->
+<div style="max-width: 1200px; margin: 0 auto; padding: 25px 20px;">
+
+    <!-- Encabezado Principal -->
+    <div class="row" style="margin-bottom: 30px;">
         <div class="col-md-12">
-            <h1 style="font-weight: 700; color: #2c3e50; font-size: 28px; letter-spacing: -0.5px;">
-                <i class="fa fa-tachometer" style="margin-right: 10px; color: #34495e;"></i>Resumen de Alertas
+            <h1 style="font-weight: 700; color: #2c3e50; font-size: 26px; letter-spacing: -0.5px; margin-bottom: 5px;">
+                <i class="fa fa-tachometer" style="margin-right: 12px; color: #34495e;"></i>Panel de Monitoreo y Alertas
             </h1>
-            <hr style="border-top: 2px solid #ecf0f1; margin-top: 10px;">
+            <p style="color: #7f8c8d; margin-left: 35px; font-size: 14px; margin-top: 0;">Métricas de rendimiento e histórico de incidencias en tiempo real.</p>
+            <hr style="border-top: 2px solid #f2f4f4; margin-top: 15px; margin-bottom: 0;">
         </div>
     </div>
 
+    <!-- Fila 1: Tarjetas de Contadores de Alertas -->
     <div class="row">
-        <div class="col-md-6 col-sm-12" style="margin-bottom: 20px;">
-            <div class="panel panel-default"
-                 style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #e74c3c;">
-                <div class="panel-body" style="padding: 25px 30px;">
-                    <div class="row">
-                        <div class="col-xs-3" style="font-size: 45px; color: #e74c3c; padding-top: 5px;">
+        <!-- Tarjeta Alertas Emitidas -->
+        <div class="col-md-6 col-sm-12" style="margin-bottom: 25px;">
+            <div class="panel panel-default dashboard-card"
+                 style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border-left: 5px solid #e74c3c; transition: transform 0.2s ease;">
+                <div class="panel-body" style="padding: 22px 30px;">
+                    <div class="row" style="display: flex; align-items: center;">
+                        <div class="col-xs-3" style="font-size: 40px; color: #e74c3c;">
                             <i class="fa fa-bell-o"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <span style="font-size: 14px; text-transform: uppercase; color: #7f8c8d; font-weight: 600;">Total Emitidas</span>
-                            <h2 style="margin: 5px 0 0 0; font-size: 38px; font-weight: 700; color: #2c3e50;">{{
-                                total_alerted_alerts }}</h2>
+                            <span style="font-size: 12px; text-transform: uppercase; color: #95a5a6; font-weight: 700; letter-spacing: 0.5px;">Total Emitidas</span>
+                            <h2 style="margin: 5px 0 0 0; font-size: 36px; font-weight: 700; color: #2c3e50;">{{ total_alerted_alerts }}</h2>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6 col-sm-12" style="margin-bottom: 20px;">
-            <div class="panel panel-default"
-                 style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #2ecc71;">
-                <div class="panel-body" style="padding: 25px 30px;">
-                    <div class="row">
-                        <div class="col-xs-3" style="font-size: 45px; color: #2ecc71; padding-top: 5px;">
+        <!-- Tarjeta Alertas Vistas -->
+        <div class="col-md-6 col-sm-12" style="margin-bottom: 25px;">
+            <div class="panel panel-default dashboard-card"
+                 style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border-left: 5px solid #2ecc71; transition: transform 0.2s ease;">
+                <div class="panel-body" style="padding: 22px 30px;">
+                    <div class="row" style="display: flex; align-items: center;">
+                        <div class="col-xs-3" style="font-size: 40px; color: #2ecc71;">
                             <i class="fa fa-eye"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <span style="font-size: 14px; text-transform: uppercase; color: #7f8c8d; font-weight: 600;">Total Vistas</span>
-                            <h2 style="margin: 5px 0 0 0; font-size: 38px; font-weight: 700; color: #2c3e50;">{{
-                                total_viewed_alerts }}</h2>
+                            <span style="font-size: 12px; text-transform: uppercase; color: #95a5a6; font-weight: 700; letter-spacing: 0.5px;">Total Vistas</span>
+                            <h2 style="margin: 5px 0 0 0; font-size: 36px; font-weight: 700; color: #2c3e50;">{{ total_viewed_alerts }}</h2>
                         </div>
                     </div>
                 </div>
@@ -46,40 +51,95 @@
         </div>
     </div>
 
-    <div class="row" style="margin-top: 15px;">
-        <div class="col-md-6 col-md-offset-3 col-sm-12">
-            <div class="panel panel-default" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <!-- Fila 2: Sección de Gráficos Distribuidos -->
+    <div class="row">
+        <!-- Panel 1: Proporción de Alertas -->
+        <div class="col-md-4 col-sm-12" style="margin-bottom: 25px;">
+            <div class="panel panel-default" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #eef2f3;">
                 <div class="panel-heading"
-                     style="background-color: #fff; font-weight: 600; color: #34495e; border-bottom: 1px solid #f2f4f4;">
-                    <i class="fa fa-pie-chart" style="margin-right: 8px;"></i> Proporción de Alertas
+                     style="background-color: #ffffff; font-weight: 600; color: #34495e; border-bottom: 1px solid #f2f4f4; padding: 15px 20px;">
+                    <i class="fa fa-pie-chart" style="margin-right: 8px; color: #7f8c8d;"></i> Proporción de Alertas
                 </div>
-                <div class="panel-body" style="padding: 30px; min-height: 320px;">
-                    <canvas id="alertsChart"></canvas>
+                <div class="panel-body" style="padding: 20px; height: 320px; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 100%; height: 100%; position: relative;">
+                        <canvas id="alertsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 2: Historial Analítico de Métricas (CORREGIDO EL DESBORDAMIENTO) -->
+        <div class="col-md-8 col-sm-12" style="margin-bottom: 25px;">
+            <div class="panel panel-default" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #eef2f3;">
+                <div class="panel-heading"
+                     style="background-color: #ffffff; font-weight: 600; color: #34495e; border-bottom: 1px solid #f2f4f4; padding: 15px 20px;">
+                    <i class="fa fa-bar-chart" style="margin-right: 8px; color: #7f8c8d;"></i> Historial de Muestras por Métrica
+                </div>
+                <div class="panel-body" style="padding: 20px; height: 320px; overflow: hidden;">
+                    <!-- Grid directo usando estilos explícitos para forzar contención -->
+                    <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
+                        <!-- Tabla interna -->
+                        <div style="flex: 0 0 40%; height: 100%; overflow-y: auto;">
+                            <table class="table table-hover" style="font-size: 13px; margin-bottom: 0; width: 100%;">
+                                <thead style="background-color: #f8f9fa; color: #34495e; position: sticky; top: 0; z-index: 1;">
+                                    <tr>
+                                        <th style="border-bottom: 1px solid #eaeded; font-weight: 600;">Métrica</th>
+                                        <th style="border-bottom: 1px solid #eaeded; font-weight: 600;" class="text-right">Registros</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for metric, count in metrics_history_report.items() %}
+                                    <tr>
+                                        <td style="color: #2c3e50; font-weight: 500; padding: 10px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                            <i class="fa fa-cube" style="margin-right: 6px; color: #bdc3c7;"></i>{{ metric }}
+                                        </td>
+                                        <td style="padding: 10px 8px; font-weight: 600; color: #34495e;" class="text-right">{{ count }}</td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="2" class="text-center" style="color: #95a5a6; padding: 20px;">No hay datos en el historial</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Contenedor seguro para el gráfico de barras -->
+                        <div style="flex: 0 0 60%; height: 100%; position: relative; width: 100%;">
+                            <canvas id="metricsBarChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    .dashboard-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.06) !important;
+    }
+</style>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // --- DATA DE ENTRADA JINJA2 ---
         const totalEmitidas = parseInt("{{ total_alerted_alerts }}") || 0;
         const totalVistas = parseInt("{{ total_viewed_alerts }}") || 0;
 
-        const ctx = document.getElementById('alertsChart').getContext('2d');
+        const metricsData = {{ metrics_history_report | tojson | safe if metrics_history_report else '{}' }};
 
-        new Chart(ctx, {
+        // 1. GRÁFICO DE TORTA
+        const ctxPie = document.getElementById('alertsChart').getContext('2d');
+        new Chart(ctxPie, {
             type: 'pie',
             data: {
                 labels: ['Alertas Emitidas', 'Alertas Vistas'],
                 datasets: [{
                     data: [totalEmitidas, totalVistas],
-                    backgroundColor: [
-                        '#e74c3c',
-                        '#2ecc71'
-                    ],
+                    backgroundColor: ['#e74c3c', '#2ecc71'],
                     borderWidth: 2,
                     borderColor: '#ffffff'
                 }]
@@ -91,13 +151,70 @@
                     legend: {
                         position: 'bottom',
                         labels: {
-                            font: {
-                                size: 13,
-                                family: 'sans-serif'
-                            },
-                            color: '#34495e',
-                            padding: 20
+                            boxWidth: 12,
+                            font: { size: 12, family: 'sans-serif' },
+                            color: '#515a5a',
+                            padding: 15
                         }
+                    }
+                }
+            }
+        });
+
+        // 2. GRÁFICO DE BARRAS MULTICOLOR (COMPORTAMIENTO AJUSTADO)
+        const metricLabels = Object.keys(metricsData);
+        const metricValues = Object.values(metricsData);
+
+        const paletteBackgrounds = [
+            'rgba(52, 152, 219, 0.75)',  // Azul
+            'rgba(155, 89, 182, 0.75)',  // Púrpura
+            'rgba(230, 126, 34, 0.75)',  // Naranja
+            'rgba(26, 188, 156, 0.75)',  // Turquesa
+            'rgba(241, 196, 15, 0.75)',  // Amarillo
+            'rgba(52, 73, 94, 0.75)'     // Gris Oscuro
+        ];
+
+        const paletteBorders = [
+            'rgba(52, 152, 219, 1)',
+            'rgba(155, 89, 182, 1)',
+            'rgba(230, 126, 34, 1)',
+            'rgba(26, 188, 156, 1)',
+            'rgba(241, 196, 15, 1)',
+            'rgba(52, 73, 94, 1)'
+        ];
+
+        const barBackgrounds = metricLabels.map((_, i) => paletteBackgrounds[i % paletteBackgrounds.length]);
+        const barBorders = metricLabels.map((_, i) => paletteBorders[i % paletteBorders.length]);
+
+        const ctxBar = document.getElementById('metricsBarChart').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: metricLabels,
+                datasets: [{
+                    label: 'Cantidad de Muestras',
+                    data: metricValues,
+                    backgroundColor: barBackgrounds,
+                    borderColor: barBorders,
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Ahora el contenedor padre controla el tamaño estricto
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#7f8c8d', font: { size: 11, weight: '500' } }
+                    },
+                    y: {
+                        grid: { color: '#f2f4f4' },
+                        ticks: { color: '#7f8c8d', font: { size: 11 } },
+                        beginAtZero: true
                     }
                 }
             }

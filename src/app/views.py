@@ -118,8 +118,15 @@ class ReportView(BaseView):
         total_viewed_alerts = db.session.query(db.func.count(AlertHistory.id)).where(
             AlertHistory.state == 'VIEWED').scalar() or 0
 
+        metrics_group_query = db.session.query(MetricHistory.metric.label('metric_name'),
+                                               db.func.count(MetricHistory.id).label('total_count')).group_by(
+            MetricHistory.metric).all()
+
+        metrics_history_report = {row.metric_name: row.total_count for row in metrics_group_query}
+
         return self.render_template("reports.html", total_alerted_alerts=total_alerted_alerts,
-                                    total_viewed_alerts=total_viewed_alerts)
+                                    total_viewed_alerts=total_viewed_alerts,
+                                    metrics_history_report=metrics_history_report)
 
 
 appbuilder.add_view(ServerModelView, 'Servidores', icon='fa-server', category='Inicio',
