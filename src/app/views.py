@@ -1,7 +1,9 @@
 from flask_appbuilder import ModelView, BaseView, expose
 from flask_appbuilder.models.sqla.interface import SQLAInterface
+from markdown import markdown
 
 from .extensions import appbuilder, db
+from .ia_integration import metrics_analyzer, enhanced_analytic_response
 from .models import Server, Metric, AlertConfiguration, AlertHistory, MetricHistory
 
 
@@ -124,9 +126,44 @@ class ReportView(BaseView):
 
         metrics_history_report = {row.metric_name: row.total_count for row in metrics_group_query}
 
+        servers_history_string = self.get_resume_servers_as_string()
+        metrics_analyzed = metrics_analyzer(servers_history_string)
+        metrics_analyzed_html = markdown(metrics_analyzed)
+
+        enhanced_analysis = enhanced_analytic_response(metrics_analyzed)
+
+        print(enhanced_analysis)
+
         return self.render_template("reports.html", total_alerted_alerts=total_alerted_alerts,
                                     total_viewed_alerts=total_viewed_alerts,
-                                    metrics_history_report=metrics_history_report)
+                                    metrics_history_report=metrics_history_report,
+                                    metrics_analyzed=enhanced_analysis, metrics_analyzed_html=metrics_analyzed_html)
+
+    def get_resume_servers_as_string(self):
+        servers = db.session.query(Server).all()
+
+        servers_as_string = ''
+
+        for server in servers:
+            last_history = db.session.query(MetricHistory).where(MetricHistory.server_id == server.id).order_by(
+                MetricHistory.created_at.desc()).limit(30).all()
+
+            servers_as_string += f'''Servidor - {server.name} | {server.host} | {server.port}
+            Ultimos 30 valores registrados:
+            |fecha | metrica | valor | unidad|
+            |------|---------|-------|-------|\n'''
+
+            if len(last_history) < 1:
+                servers_as_string += 'Sin valores registrados\n'
+                continue
+
+            for metric in last_history:
+                servers_as_string += f'|{metric.created_at}|{metric.metric}|{metric.value}|{metric.unit}|\n'
+
+            servers_as_string += '\n'
+
+        # print(servers_as_string)
+        return servers_as_string
 
 
 appbuilder.add_view(ServerModelView, 'Servidores', icon='fa-server', category='Inicio',

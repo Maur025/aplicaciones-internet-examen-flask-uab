@@ -1,223 +1,993 @@
-<!-- Contenedor Envolvente para Centrar y limitar la expansión en pantallas anchas -->
-<div style="max-width: 1200px; margin: 0 auto; padding: 25px 20px;">
+<div class="reports-page">
+	<style>
+		.reports-page {
+			max-width: 1320px;
+			margin: 0 auto;
+			padding: 24px 18px 32px;
+			color: #1f2937;
+			background:
+				radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 32%),
+				radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.07), transparent 30%),
+				linear-gradient(180deg, #f8fbff 0%, #f3f7fb 55%, #eef4f8 100%);
+			border-radius: 28px;
+		}
 
-    <!-- Encabezado Principal -->
-    <div class="row" style="margin-bottom: 30px;">
-        <div class="col-md-12">
-            <h1 style="font-weight: 700; color: #2c3e50; font-size: 26px; letter-spacing: -0.5px; margin-bottom: 5px;">
-                <i class="fa fa-tachometer" style="margin-right: 12px; color: #34495e;"></i>Panel de Monitoreo y Alertas
-            </h1>
-            <p style="color: #7f8c8d; margin-left: 35px; font-size: 14px; margin-top: 0;">Métricas de rendimiento e histórico de incidencias en tiempo real.</p>
-            <hr style="border-top: 2px solid #f2f4f4; margin-top: 15px; margin-bottom: 0;">
-        </div>
-    </div>
+		.reports-shell {
+			position: relative;
+			overflow: hidden;
+			padding: 8px;
+		}
 
-    <!-- Fila 1: Tarjetas de Contadores de Alertas -->
-    <div class="row">
-        <!-- Tarjeta Alertas Emitidas -->
-        <div class="col-md-6 col-sm-12" style="margin-bottom: 25px;">
-            <div class="panel panel-default dashboard-card"
-                 style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border-left: 5px solid #e74c3c; transition: transform 0.2s ease;">
-                <div class="panel-body" style="padding: 22px 30px;">
-                    <div class="row" style="display: flex; align-items: center;">
-                        <div class="col-xs-3" style="font-size: 40px; color: #e74c3c;">
-                            <i class="fa fa-bell-o"></i>
-                        </div>
-                        <div class="col-xs-9 text-right">
-                            <span style="font-size: 12px; text-transform: uppercase; color: #95a5a6; font-weight: 700; letter-spacing: 0.5px;">Total Emitidas</span>
-                            <h2 style="margin: 5px 0 0 0; font-size: 36px; font-weight: 700; color: #2c3e50;">{{ total_alerted_alerts }}</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+		.reports-shell::before,
+		.reports-shell::after {
+			content: "";
+			position: absolute;
+			inset: auto;
+			width: 220px;
+			height: 220px;
+			border-radius: 50%;
+			pointer-events: none;
+			opacity: 0.35;
+			filter: blur(4px);
+		}
 
-        <!-- Tarjeta Alertas Vistas -->
-        <div class="col-md-6 col-sm-12" style="margin-bottom: 25px;">
-            <div class="panel panel-default dashboard-card"
-                 style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border-left: 5px solid #2ecc71; transition: transform 0.2s ease;">
-                <div class="panel-body" style="padding: 22px 30px;">
-                    <div class="row" style="display: flex; align-items: center;">
-                        <div class="col-xs-3" style="font-size: 40px; color: #2ecc71;">
-                            <i class="fa fa-eye"></i>
-                        </div>
-                        <div class="col-xs-9 text-right">
-                            <span style="font-size: 12px; text-transform: uppercase; color: #95a5a6; font-weight: 700; letter-spacing: 0.5px;">Total Vistas</span>
-                            <h2 style="margin: 5px 0 0 0; font-size: 36px; font-weight: 700; color: #2c3e50;">{{ total_viewed_alerts }}</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		.reports-shell::before {
+			top: -90px;
+			right: -90px;
+			background: radial-gradient(
+				circle,
+				rgba(59, 130, 246, 0.22) 0%,
+				rgba(59, 130, 246, 0) 68%
+			);
+		}
 
-    <!-- Fila 2: Sección de Gráficos Distribuidos -->
-    <div class="row">
-        <!-- Panel 1: Proporción de Alertas -->
-        <div class="col-md-4 col-sm-12" style="margin-bottom: 25px;">
-            <div class="panel panel-default" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #eef2f3;">
-                <div class="panel-heading"
-                     style="background-color: #ffffff; font-weight: 600; color: #34495e; border-bottom: 1px solid #f2f4f4; padding: 15px 20px;">
-                    <i class="fa fa-pie-chart" style="margin-right: 8px; color: #7f8c8d;"></i> Proporción de Alertas
-                </div>
-                <div class="panel-body" style="padding: 20px; height: 320px; display: flex; align-items: center; justify-content: center;">
-                    <div style="width: 100%; height: 100%; position: relative;">
-                        <canvas id="alertsChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+		.reports-shell::after {
+			bottom: -90px;
+			left: -90px;
+			background: radial-gradient(
+				circle,
+				rgba(16, 185, 129, 0.18) 0%,
+				rgba(16, 185, 129, 0) 68%
+			);
+		}
 
-        <!-- Panel 2: Historial Analítico de Métricas (CORREGIDO EL DESBORDAMIENTO) -->
-        <div class="col-md-8 col-sm-12" style="margin-bottom: 25px;">
-            <div class="panel panel-default" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #eef2f3;">
-                <div class="panel-heading"
-                     style="background-color: #ffffff; font-weight: 600; color: #34495e; border-bottom: 1px solid #f2f4f4; padding: 15px 20px;">
-                    <i class="fa fa-bar-chart" style="margin-right: 8px; color: #7f8c8d;"></i> Historial de Muestras por Métrica
-                </div>
-                <div class="panel-body" style="padding: 20px; height: 320px; overflow: hidden;">
-                    <!-- Grid directo usando estilos explícitos para forzar contención -->
-                    <div style="display: flex; width: 100%; height: 100%; gap: 15px;">
-                        <!-- Tabla interna -->
-                        <div style="flex: 0 0 40%; height: 100%; overflow-y: auto;">
-                            <table class="table table-hover" style="font-size: 13px; margin-bottom: 0; width: 100%;">
-                                <thead style="background-color: #f8f9fa; color: #34495e; position: sticky; top: 0; z-index: 1;">
-                                    <tr>
-                                        <th style="border-bottom: 1px solid #eaeded; font-weight: 600;">Métrica</th>
-                                        <th style="border-bottom: 1px solid #eaeded; font-weight: 600;" class="text-right">Registros</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for metric, count in metrics_history_report.items() %}
-                                    <tr>
-                                        <td style="color: #2c3e50; font-weight: 500; padding: 10px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                            <i class="fa fa-cube" style="margin-right: 6px; color: #bdc3c7;"></i>{{ metric }}
-                                        </td>
-                                        <td style="padding: 10px 8px; font-weight: 600; color: #34495e;" class="text-right">{{ count }}</td>
-                                    </tr>
-                                    {% else %}
-                                    <tr>
-                                        <td colspan="2" class="text-center" style="color: #95a5a6; padding: 20px;">No hay datos en el historial</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- Contenedor seguro para el gráfico de barras -->
-                        <div style="flex: 0 0 60%; height: 100%; position: relative; width: 100%;">
-                            <canvas id="metricsBarChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		.reports-hero {
+			position: relative;
+			z-index: 1;
+			margin-bottom: 22px;
+			padding: 26px;
+			border: 1px solid #e5eef6;
+			border-radius: 22px;
+			background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+			box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+		}
+
+		.reports-hero__eyebrow {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 10px;
+			padding: 6px 12px;
+			border-radius: 999px;
+			background: rgba(37, 99, 235, 0.08);
+			color: #1d4ed8;
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+		}
+
+		.reports-hero h1 {
+			margin: 0;
+			font-size: clamp(28px, 3vw, 40px);
+			line-height: 1.1;
+			letter-spacing: -0.03em;
+			color: #0f172a;
+		}
+		<div class="reports-page" > <style > .reports-page {
+			max-width: 1320px;
+			margin: 0 auto;
+			padding: 24px 18px 32px;
+			color: #1f2937;
+			background:
+				radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 32%),
+				radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.07), transparent 30%),
+				linear-gradient(180deg, #f8fbff 0%, #f3f7fb 55%, #eef4f8 100%);
+			border-radius: 28px;
+		}
+
+		.reports-shell {
+			position: relative;
+			overflow: hidden;
+			padding: 8px;
+		}
+
+		.reports-shell::before,
+		.reports-shell::after {
+			content: "";
+			position: absolute;
+			inset: auto;
+			width: 220px;
+			height: 220px;
+			border-radius: 50%;
+			pointer-events: none;
+			opacity: 0.35;
+			filter: blur(4px);
+		}
+
+		.reports-shell::before {
+			top: -90px;
+			right: -90px;
+			background: radial-gradient(
+				circle,
+				rgba(59, 130, 246, 0.22) 0%,
+				rgba(59, 130, 246, 0) 68%
+			);
+		}
+
+		.reports-shell::after {
+			bottom: -90px;
+			left: -90px;
+			background: radial-gradient(
+				circle,
+				rgba(16, 185, 129, 0.18) 0%,
+				rgba(16, 185, 129, 0) 68%
+			);
+		}
+
+		.reports-hero {
+			position: relative;
+			z-index: 1;
+			margin-bottom: 22px;
+			padding: 26px;
+			border: 1px solid #e5eef6;
+			border-radius: 22px;
+			background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+			box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+		}
+
+		.reports-hero__eyebrow {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 10px;
+			padding: 6px 12px;
+			border-radius: 999px;
+			background: rgba(37, 99, 235, 0.08);
+			color: #1d4ed8;
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+		}
+
+		.reports-hero h1 {
+			margin: 0;
+			font-size: clamp(28px, 3vw, 40px);
+			line-height: 1.1;
+			letter-spacing: -0.03em;
+			color: #0f172a;
+		}
+
+		.reports-hero p {
+			margin: 12px 0 0;
+			max-width: 760px;
+			color: #5b6475;
+			font-size: 15px;
+			line-height: 1.6;
+		}
+
+		.reports-grid {
+			position: relative;
+			z-index: 1;
+		}
+
+		.metric-card,
+		.report-panel {
+			border: 1px solid #e8eef5;
+			border-radius: 20px;
+			background: rgba(255, 255, 255, 0.94);
+			box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+			transition:
+				transform 0.2s ease,
+				box-shadow 0.2s ease,
+				border-color 0.2s ease;
+		}
+
+		.metric-card:hover,
+		.report-panel:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 18px 34px rgba(15, 23, 42, 0.09);
+			border-color: #d7e4f2;
+		}
+
+		.metric-card {
+			padding: 20px 22px;
+			border-left-width: 6px;
+			border-left-style: solid;
+			min-height: 128px;
+		}
+
+		.metric-card--alerts {
+			border-left-color: #ef4444;
+		}
+
+		.metric-card--views {
+			border-left-color: #10b981;
+		}
+
+		.metric-card__label {
+			margin-bottom: 10px;
+			color: #6b7280;
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: 0.09em;
+			text-transform: uppercase;
+		}
+
+		.metric-card__content {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 18px;
+		}
+
+		.metric-card__icon {
+			width: 56px;
+			height: 56px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 16px;
+			font-size: 24px;
+			flex: 0 0 auto;
+		}
+
+		.metric-card--alerts .metric-card__icon {
+			color: #ef4444;
+			background: rgba(239, 68, 68, 0.1);
+		}
+
+		.metric-card--views .metric-card__icon {
+			color: #10b981;
+			background: rgba(16, 185, 129, 0.1);
+		}
+
+		.metric-card__value {
+			margin: 0;
+			color: #0f172a;
+			font-size: clamp(32px, 4vw, 44px);
+			font-weight: 800;
+			letter-spacing: -0.04em;
+			line-height: 1;
+		}
+
+		.metric-card__hint {
+			margin-top: 6px;
+			color: #6b7280;
+			font-size: 13px;
+		}
+
+		.report-panel__header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 16px;
+			padding: 16px 18px 14px;
+			border-bottom: 1px solid #edf2f7;
+		}
+
+		.report-panel__title {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin: 0;
+			color: #0f172a;
+			font-size: 17px;
+			font-weight: 700;
+			letter-spacing: -0.02em;
+		}
+
+		.report-panel__subtitle {
+			margin: 2px 0 0;
+			color: #6b7280;
+			font-size: 13px;
+			line-height: 1.5;
+		}
+
+		.report-panel__body {
+			padding: 16px 18px 18px;
+		}
+
+		.chart-shell {
+			position: relative;
+			width: 100%;
+			height: clamp(220px, 28vw, 260px);
+		}
+
+		.chart-shell--donut {
+			height: clamp(220px, 28vw, 250px);
+		}
+
+		.chart-shell--bars {
+			height: clamp(250px, 32vw, 300px);
+		}
+
+		.chart-shell canvas {
+			width: 100% !important;
+			height: 100% !important;
+			display: block;
+		}
+
+		.metric-table-wrap {
+			max-height: 300px;
+			overflow: auto;
+			border: 1px solid #edf2f7;
+			border-radius: 16px;
+			background: #fff;
+		}
+
+		.metric-table {
+			margin-bottom: 0;
+			font-size: 13px;
+		}
+
+		.metric-table thead th {
+			position: sticky;
+			top: 0;
+			z-index: 1;
+			border-bottom: 1px solid #e5eef6 !important;
+			background: #f8fbff;
+			color: #475569;
+			font-weight: 700;
+		}
+
+		.metric-table tbody tr:hover {
+			background: #f8fbff;
+		}
+
+		.metric-name {
+			max-width: 260px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.analysis-results {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 16px;
+			align-items: stretch;
+		}
+
+		.analysis-results > * {
+			min-width: 0;
+		}
+
+		.server-summary-card {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			border: 1px solid #e4edf6;
+			border-radius: 18px;
+			background: linear-gradient(180deg, #ffffff 0%, #f9fcff 100%);
+			box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+			overflow: hidden;
+			transition:
+				transform 0.2s ease,
+				box-shadow 0.2s ease,
+				border-color 0.2s ease;
+		}
+
+		.server-summary-card:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 16px 30px rgba(15, 23, 42, 0.1);
+			border-color: #cfe0f0;
+		}
+
+		.card-header-summary {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 16px 18px;
+			border-bottom: 1px solid #eaf1f7;
+			background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), rgba(16, 185, 129, 0.05));
+		}
+
+		.card-header-summary h4 {
+			margin: 0;
+			color: #0f172a;
+			font-size: 16px;
+			font-weight: 800;
+			letter-spacing: -0.02em;
+		}
+
+		.card-body-summary {
+			padding: 16px 18px 18px;
+			color: #334155;
+			font-size: 14px;
+			line-height: 1.65;
+		}
+
+		.card-body-summary p {
+			margin: 0 0 10px;
+		}
+
+		.card-body-summary p:last-child {
+			margin-bottom: 0;
+		}
+
+		.card-body-summary strong {
+			color: #0f172a;
+		}
+
+		.status-badge {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 6px 10px;
+			border-radius: 999px;
+			font-size: 11px;
+			font-weight: 800;
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+			white-space: nowrap;
+			flex: 0 0 auto;
+		}
+
+		.status-critical {
+			color: #b91c1c;
+			background: rgba(239, 68, 68, 0.1);
+		}
+
+		.status-warning {
+			color: #b45309;
+			background: rgba(245, 158, 11, 0.12);
+		}
+
+		.status-ok {
+			color: #047857;
+			background: rgba(16, 185, 129, 0.12);
+		}
+
+		.analysis-results table {
+			width: 100%;
+			border-collapse: collapse;
+			border: 1px solid #e8eef5;
+			border-radius: 16px;
+			overflow: hidden;
+			background: #fff;
+		}
+
+		.analysis-results table th,
+		.analysis-results table td {
+			padding: 10px 12px;
+			border-bottom: 1px solid #edf2f7;
+			vertical-align: top;
+		}
+
+		.analysis-results table th {
+			background: #f8fbff;
+			color: #475569;
+			font-weight: 700;
+		}
+
+		.analysis-results table tr:last-child td {
+			border-bottom: 0;
+		}
+
+		.analysis-results ul,
+		.analysis-results ol {
+			margin: 0 0 0 18px;
+			padding: 0;
+		}
+
+		.analysis-results li + li {
+			margin-top: 6px;
+		}
+
+		.analysis-results pre,
+		.analysis-results code {
+			border-radius: 12px;
+			background: #0f172a;
+			color: #e2e8f0;
+		}
+
+		.analysis-results pre {
+			padding: 14px 16px;
+			overflow: auto;
+		}
+
+		.analysis-results code {
+			padding: 2px 6px;
+		}
+
+		.ai-panel {
+			margin-top: 6px;
+		}
+
+		.ai-panel .card {
+			border: 1px solid #e8eef5;
+			border-radius: 20px;
+			box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+			overflow: hidden;
+		}
+
+		.ai-panel .card-header {
+			padding: 16px 18px;
+			border-bottom: 1px solid #edf2f7;
+			background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+		}
+
+		.ai-panel .card-header h2 {
+			margin: 0;
+			color: #0f172a;
+			font-size: 18px;
+			font-weight: 700;
+		}
+
+		.ai-panel .card-body {
+			padding: 18px;
+			color: #334155;
+		}
+
+		.empty-state {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 320px;
+			padding: 24px;
+			border: 1px dashed #d5deea;
+			border-radius: 16px;
+			background: #fbfdff;
+			color: #64748b;
+			text-align: center;
+		}
+
+		@media (max-width: 767px) {
+			.reports-page {
+				padding: 14px 12px 24px;
+			}
+
+			.reports-hero,
+			.report-panel__header,
+			.report-panel__body,
+			.ai-panel .card-header,
+			.ai-panel .card-body {
+				padding-left: 16px;
+				padding-right: 16px;
+			}
+
+			.metric-card__content {
+				gap: 14px;
+			}
+
+			.metric-card__icon {
+				width: 52px;
+				height: 52px;
+				font-size: 22px;
+			}
+
+			.chart-shell {
+				height: 230px;
+			}
+
+			.chart-shell--bars {
+				height: 260px;
+			}
+		}
+	</style>
+
+	<div class="reports-shell">
+		<div class="reports-hero">
+			<div class="reports-hero__eyebrow">
+				<i class="fa fa-area-chart"></i>
+				Reportes y monitoreo
+			</div>
+			<h1>Panel de Monitoreo y Alertas</h1>
+			<p>
+				Métricas clave, proporción de alertas e historial de muestras organizados en una
+				sola vista para facilitar la lectura, detectar tendencias y revisar el estado de la
+				infraestructura sin saturar la pantalla.
+			</p>
+		</div>
+
+		<div class="row reports-grid">
+			<div class="col-md-6 col-sm-12" style="margin-bottom: 18px">
+				<div class="metric-card metric-card--alerts">
+					<div class="metric-card__label">Total emitidas</div>
+					<div class="metric-card__content">
+						<div>
+							<p class="metric-card__value">{{ total_alerted_alerts }}</p>
+							<div class="metric-card__hint">Alertas generadas por el sistema</div>
+						</div>
+						<div class="metric-card__icon">
+							<i class="fa fa-bell-o"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-6 col-sm-12" style="margin-bottom: 18px">
+				<div class="metric-card metric-card--views">
+					<div class="metric-card__label">Total vistas</div>
+					<div class="metric-card__content">
+						<div>
+							<p class="metric-card__value">{{ total_viewed_alerts }}</p>
+							<div class="metric-card__hint">Alertas revisadas por el equipo</div>
+						</div>
+						<div class="metric-card__icon">
+							<i class="fa fa-eye"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4 col-sm-12" style="margin-bottom: 18px">
+				<div class="report-panel">
+					<div class="report-panel__header">
+						<div>
+							<h3 class="report-panel__title">
+								<i class="fa fa-pie-chart" style="color: #2563eb"></i>
+								Proporción de alertas
+							</h3>
+							<p class="report-panel__subtitle">
+								Distribución entre alertas emitidas y alertas vistas.
+							</p>
+						</div>
+					</div>
+					<div class="report-panel__body">
+						{% if total_alerted_alerts or total_viewed_alerts %}
+						<div class="chart-shell chart-shell--donut">
+							<canvas id="alertsChart"></canvas>
+						</div>
+						{% else %}
+						<div class="empty-state">
+							No hay datos suficientes para construir la gráfica de alertas.
+						</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-8 col-sm-12" style="margin-bottom: 18px">
+				<div class="report-panel">
+					<div class="report-panel__header">
+						<div>
+							<h3 class="report-panel__title">
+								<i class="fa fa-bar-chart" style="color: #2563eb"></i>
+								Historial de muestras por métrica
+							</h3>
+							<p class="report-panel__subtitle">
+								Tabla ordenada y gráfico horizontal para comparar cargas sin
+								desbordes.
+							</p>
+						</div>
+					</div>
+					<div class="report-panel__body">
+						<div class="row" style="margin: 0 -10px">
+							<div class="col-sm-5" style="padding: 0 10px; margin-bottom: 16px">
+								<div class="metric-table-wrap">
+									<table class="table table-hover metric-table">
+										<thead>
+											<tr>
+												<th>Métrica</th>
+												<th class="text-right">Registros</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% if metrics_history_report %} {% for metric, count in
+											metrics_history_report.items() %}
+											<tr>
+												<td class="metric-name">
+													<i
+														class="fa fa-cube"
+														style="margin-right: 6px; color: #94a3b8"
+													></i>
+													{{ metric }}
+												</td>
+												<td
+													class="text-right"
+													style="font-weight: 700; color: #0f172a"
+												>
+													{{ count }}
+												</td>
+											</tr>
+											{% endfor %} {% else %}
+											<tr>
+												<td
+													colspan="2"
+													class="text-center"
+													style="padding: 24px; color: #64748b"
+												>
+													No hay datos en el historial.
+												</td>
+											</tr>
+											{% endif %}
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="col-sm-7" style="padding: 0 10px">
+								{% if metrics_history_report %}
+								<div class="chart-shell chart-shell--bars">
+									<canvas id="metricsBarChart"></canvas>
+								</div>
+								{% else %}
+								<div class="empty-state" style="min-height: 360px">
+									No hay datos para dibujar el gráfico de métricas.
+								</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="ai-panel">
+			<div class="card">
+				<div class="card-header">
+					<h2>
+						<i class="fa fa-magic" style="margin-right: 8px; color: #2563eb"></i>
+						Análisis de infraestructura con IA
+					</h2>
+				</div>
+				<div class="card-body">
+					<div class="analysis-results">{{ metrics_analyzed | safe }}</div>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			.analysis-toggle-card {
+				margin-top: 18px;
+			}
+
+			.analysis-toggle-card > summary {
+				list-style: none;
+				cursor: pointer;
+				padding: 0;
+			}
+
+			.analysis-toggle-card > summary::-webkit-details-marker {
+				display: none;
+			}
+
+			.analysis-toggle-card__header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 12px;
+				padding: 16px 18px;
+				border: 1px solid #e8eef5;
+				border-radius: 20px;
+				background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+				box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+				transition:
+					transform 0.2s ease,
+					box-shadow 0.2s ease,
+					border-color 0.2s ease;
+			}
+
+			.analysis-toggle-card[open] .analysis-toggle-card__header,
+			.analysis-toggle-card__header:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 18px 34px rgba(15, 23, 42, 0.09);
+				border-color: #d7e4f2;
+			}
+
+			.analysis-toggle-card__title {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				margin: 0;
+				color: #0f172a;
+				font-size: 18px;
+				font-weight: 700;
+			}
+
+			.analysis-toggle-card__hint {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				padding: 6px 10px;
+				border-radius: 999px;
+				background: rgba(37, 99, 235, 0.08);
+				color: #1d4ed8;
+				font-size: 12px;
+				font-weight: 700;
+				white-space: nowrap;
+			}
+
+			.analysis-toggle-card__body {
+				margin-top: 14px;
+				padding: 18px;
+				border: 1px solid #e8eef5;
+				border-radius: 20px;
+				background: rgba(255, 255, 255, 0.94);
+				box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+			}
+
+			.analysis-toggle-card__chevron {
+				color: #64748b;
+				transition: transform 0.2s ease;
+			}
+
+			.analysis-toggle-card[open] .analysis-toggle-card__chevron {
+				transform: rotate(180deg);
+			}
+
+			@media (max-width: 767px) {
+				.analysis-toggle-card__header {
+					padding: 14px 16px;
+				}
+
+				.analysis-toggle-card__title {
+					font-size: 16px;
+				}
+
+				.analysis-toggle-card__body {
+					padding: 16px;
+				}
+			}
+		</style>
+
+		<details class="analysis-toggle-card">
+			<summary class="analysis-toggle-card__header">
+				<div class="analysis-toggle-card__title">
+					<i class="fa fa-magic" style="color: #2563eb"></i>
+					Análisis de infraestructura con IA (Detalles)
+				</div>
+				<span class="analysis-toggle-card__hint">
+					<span>Ver / ocultar</span>
+					<i class="fa fa-chevron-down analysis-toggle-card__chevron"></i>
+				</span>
+			</summary>
+			<div class="analysis-toggle-card__body">
+				<div class="analysis-results">{{ metrics_analyzed_html | safe }}</div>
+			</div>
+		</details>
+	</div>
 </div>
 
-<style>
-    .dashboard-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.06) !important;
-    }
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // --- DATA DE ENTRADA JINJA2 ---
-        const totalEmitidas = parseInt("{{ total_alerted_alerts }}") || 0;
-        const totalVistas = parseInt("{{ total_viewed_alerts }}") || 0;
+	document.addEventListener('DOMContentLoaded', function () {
+		const totalEmitidas = Number({{ total_alerted_alerts | default(0) }}) || 0;
+		const totalVistas = Number({{ total_viewed_alerts | default(0) }}) || 0;
+		const metricsData = {{ metrics_history_report | tojson if metrics_history_report else '{}' }};
 
-        const metricsData = {{ metrics_history_report | tojson | safe if metrics_history_report else '{}' }};
+		const sharedTooltip = {
+			enabled: true,
+			backgroundColor: 'rgba(15, 23, 42, 0.92)',
+			titleColor: '#ffffff',
+			bodyColor: '#ffffff',
+			borderColor: 'rgba(148, 163, 184, 0.25)',
+			borderWidth: 1,
+			padding: 12,
+			displayColors: false
+		};
 
-        // 1. GRÁFICO DE TORTA
-        const ctxPie = document.getElementById('alertsChart').getContext('2d');
-        new Chart(ctxPie, {
-            type: 'pie',
-            data: {
-                labels: ['Alertas Emitidas', 'Alertas Vistas'],
-                datasets: [{
-                    data: [totalEmitidas, totalVistas],
-                    backgroundColor: ['#e74c3c', '#2ecc71'],
-                    borderWidth: 2,
-                    borderColor: '#ffffff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            boxWidth: 12,
-                            font: { size: 12, family: 'sans-serif' },
-                            color: '#515a5a',
-                            padding: 15
-                        }
-                    }
-                }
-            }
-        });
+		const alertsCanvas = document.getElementById('alertsChart');
+		if (alertsCanvas && (totalEmitidas > 0 || totalVistas > 0)) {
+			new Chart(alertsCanvas, {
+				type: 'doughnut',
+				data: {
+					labels: ['Alertas emitidas', 'Alertas vistas'],
+					datasets: [{
+						data: [totalEmitidas, totalVistas],
+						backgroundColor: ['#ef4444', '#10b981'],
+						borderColor: '#ffffff',
+						borderWidth: 3,
+						hoverOffset: 6,
+						cutout: '72%'
+					}]
+				},
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					plugins: {
+						legend: {
+							position: 'bottom',
+							labels: {
+								color: '#475569',
+								usePointStyle: true,
+								pointStyle: 'circle',
+								boxWidth: 10,
+								padding: 16,
+								font: {
+									size: 12,
+									family: 'sans-serif'
+								}
+							}
+						},
+						tooltip: sharedTooltip
+					}
+				}
+			});
+		}
 
-        // 2. GRÁFICO DE BARRAS MULTICOLOR (COMPORTAMIENTO AJUSTADO)
-        const metricLabels = Object.keys(metricsData);
-        const metricValues = Object.values(metricsData);
+		const metricLabels = Object.keys(metricsData || {});
+		const metricValues = Object.values(metricsData || {}).map(function (value) {
+			return Number(value) || 0;
+		});
 
-        const paletteBackgrounds = [
-            'rgba(52, 152, 219, 0.75)',  // Azul
-            'rgba(155, 89, 182, 0.75)',  // Púrpura
-            'rgba(230, 126, 34, 0.75)',  // Naranja
-            'rgba(26, 188, 156, 0.75)',  // Turquesa
-            'rgba(241, 196, 15, 0.75)',  // Amarillo
-            'rgba(52, 73, 94, 0.75)'     // Gris Oscuro
-        ];
+		const metricsCanvas = document.getElementById('metricsBarChart');
+		if (metricsCanvas && metricLabels.length > 0) {
+			const palette = [
+				'#2563eb',
+				'#7c3aed',
+				'#0f766e',
+				'#ea580c',
+				'#dc2626',
+				'#0891b2',
+				'#4f46e5',
+				'#16a34a'
+			];
 
-        const paletteBorders = [
-            'rgba(52, 152, 219, 1)',
-            'rgba(155, 89, 182, 1)',
-            'rgba(230, 126, 34, 1)',
-            'rgba(26, 188, 156, 1)',
-            'rgba(241, 196, 15, 1)',
-            'rgba(52, 73, 94, 1)'
-        ];
-
-        const barBackgrounds = metricLabels.map((_, i) => paletteBackgrounds[i % paletteBackgrounds.length]);
-        const barBorders = metricLabels.map((_, i) => paletteBorders[i % paletteBorders.length]);
-
-        const ctxBar = document.getElementById('metricsBarChart').getContext('2d');
-        new Chart(ctxBar, {
-            type: 'bar',
-            data: {
-                labels: metricLabels,
-                datasets: [{
-                    label: 'Cantidad de Muestras',
-                    data: metricValues,
-                    backgroundColor: barBackgrounds,
-                    borderColor: barBorders,
-                    borderWidth: 1,
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false, // Ahora el contenedor padre controla el tamaño estricto
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#7f8c8d', font: { size: 11, weight: '500' } }
-                    },
-                    y: {
-                        grid: { color: '#f2f4f4' },
-                        ticks: { color: '#7f8c8d', font: { size: 11 } },
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    });
+			new Chart(metricsCanvas, {
+				type: 'bar',
+				data: {
+					labels: metricLabels,
+					datasets: [{
+						label: 'Registros',
+						data: metricValues,
+						backgroundColor: metricLabels.map(function (_, index) {
+							return palette[index % palette.length];
+						}),
+						borderColor: metricLabels.map(function (_, index) {
+							return palette[index % palette.length];
+						}),
+						borderWidth: 1,
+						borderRadius: 8,
+						barThickness: 12,
+						maxBarThickness: 16
+					}]
+				},
+				options: {
+					indexAxis: 'y',
+					responsive: true,
+					maintainAspectRatio: false,
+					layout: {
+						padding: {
+							right: 10
+						}
+					},
+					plugins: {
+						legend: {
+							display: false
+						},
+						tooltip: sharedTooltip
+					},
+					scales: {
+						x: {
+							beginAtZero: true,
+							grid: {
+								color: 'rgba(148, 163, 184, 0.18)'
+							},
+							ticks: {
+								color: '#64748b',
+								precision: 0
+							}
+						},
+						y: {
+							grid: {
+								display: false
+							},
+							ticks: {
+								color: '#475569',
+								font: {
+									size: 12,
+									family: 'sans-serif'
+								}
+							}
+						}
+					}
+				}
+			});
+		}
+	});
 </script>
