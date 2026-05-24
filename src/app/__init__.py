@@ -1,7 +1,10 @@
+import os
+
 from flask import Flask
 
 import config
 from .extensions import appbuilder, db
+from .socket_client import connect_socket_client
 
 
 def create_app() -> Flask:
@@ -17,5 +20,8 @@ def create_app() -> Flask:
         db.create_all()
 
         from . import views
+
+        if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+            connect_socket_client(app)
 
     return app
