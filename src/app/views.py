@@ -127,12 +127,17 @@ class ReportView(BaseView):
         metrics_history_report = {row.metric_name: row.total_count for row in metrics_group_query}
 
         servers_history_string = self.get_resume_servers_as_string()
-        metrics_analyzed = metrics_analyzer(servers_history_string)
-        metrics_analyzed_html = markdown(metrics_analyzed)
 
-        enhanced_analysis = enhanced_analytic_response(metrics_analyzed)
+        metrics_analyzed_html = '<p>No se pudo procesar los datos en el tiempo estimado</p>'
+        enhanced_analysis = '<p>No se pudo procesar los datos en el tiempo estimado</p>'
 
-        print(enhanced_analysis)
+        try:
+            metrics_analyzed = metrics_analyzer(servers_history_string)
+            metrics_analyzed_html = markdown(metrics_analyzed)
+
+            enhanced_analysis = enhanced_analytic_response(metrics_analyzed)
+        except Exception as ex:
+            print(f'Error generating analysis: {ex}')
 
         return self.render_template("reports.html", total_alerted_alerts=total_alerted_alerts,
                                     total_viewed_alerts=total_viewed_alerts,
